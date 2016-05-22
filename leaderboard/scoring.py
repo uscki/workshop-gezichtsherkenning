@@ -11,13 +11,18 @@ tags = list(set(gold.tag))
 ids = list(set(gold_dict))
 
 def dict2sparse(d):
-    out = sparse.lil_matrix((len(ids), max(tags)))
-    for cf, ts in d.iteritems():
+    out = sparse.lil_matrix((len(ids), max(tags)+1))
+    g = d.groupby(['collection_id', 'file_id']).groups
+    for cf, ts in g.iteritems():
         for t in ts:
-            out[ids.index(cf), t] = True
+            try:
+                out[ids.index(cf), d.tag[t]] = True
+            except Exception as e:
+                print t
+                # raise e
     return out
 
-y_true = dict2sparse(gold_dict)
+y_true = dict2sparse(gold)
 
 def get_scores():
     submissions = {}
@@ -28,7 +33,7 @@ def get_scores():
             sub = pd.read_table(os.path.join(fdir,fname), converters={0:int, 1:int,2:int})
             print sub.dtypes
             if len(set(list(sub.columns)) & set(['collection_id', 'file_id', 'tag'])):
-                y_pred = dict2sparse(sub.groupby(['collection_id', 'file_id']).groups)
+                y_pred = dict2sparse(sub)
                 score = precision_recall_fscore_support(y_true, y_pred, average='micro')
                 submissions[team][fname] = score
             else:

@@ -43,10 +43,13 @@ def upload_file():
 
     try:
         scores = get_scores()
-    except:
-        kwargs['error']='parse error???'
-    kwargs['plot'] = plot_scores(scores)
-    kwargs['scores'] = scores
+        kwargs['plot'] = plot_scores(scores)
+        kwargs['scores'] = scores
+    except Exception as e:
+        kwargs['scores'] = {}
+        kwargs['plot'] = ''
+        kwargs['error']=e.message
+
 
 
     return render_template('leaderboard.html', **kwargs)
