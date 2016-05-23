@@ -48,7 +48,7 @@ def upload_file():
     except Exception as e:
         kwargs['scores'] = {}
         kwargs['plot'] = ''
-        kwargs['error']=e.message
+        kwargs['error']='Error: '+str(e)
 
 
 
