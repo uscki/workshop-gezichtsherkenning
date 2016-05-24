@@ -26,6 +26,7 @@ def refresh():
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
+    global scores
     kwargs = {'logins':LOGINS}
 
     if request.method == 'POST':
