@@ -18,8 +18,9 @@ def dict2sparse(d):
             try:
                 out[ids.index(cf), d.tag[t]] = True
             except Exception as e:
-                print t
+                # print t
                 # raise e
+                pass
     return out
 
 y_true = dict2sparse(gold)
@@ -31,13 +32,14 @@ def get_scores():
         submissions[team] = {}
         for fname in os.listdir(fdir):
             sub = pd.read_table(os.path.join(fdir,fname), converters={0:int, 1:int,2:int})
-            print sub.dtypes
+            # print sub.dtypes
             if len(set(list(sub.columns)) & set(['collection_id', 'file_id', 'tag'])):
                 y_pred = dict2sparse(sub)
                 score = precision_recall_fscore_support(y_true, y_pred, average='micro')
                 submissions[team][fname] = score
             else:
-                print sub.columns
+                pass
+                # print sub.columns
     return submissions
 
 import matplotlib
