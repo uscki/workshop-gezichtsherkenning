@@ -40,6 +40,8 @@ def get_scores():
                 print sub.columns
     return submissions
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import cStringIO
 
