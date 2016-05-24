@@ -14,8 +14,15 @@ from scoring import get_scores, plot_scores
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+scores = get_scores()
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] == 'tsv'
+
+@app.route('/refresh')
+def refresh():
+    scores = get_scores()
+    return 'freshhhhhh and funky'
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -34,6 +41,7 @@ def upload_file():
                     file.seek(0)
                     file.save(os.path.join(fdir, filename))
                     kwargs['uploaded']=filename
+                    scores = get_scores()
                 else:
                     kwargs['error']='Je moet als kolommen collection_id, file_id en tag hebben'
             else:
@@ -41,16 +49,13 @@ def upload_file():
         else:
             kwargs['error']='Fout wachtwoord'
 
+    kwargs['scores'] = scores
     try:
-        scores = get_scores()
         kwargs['plot'] = plot_scores(scores)
         kwargs['scores'] = scores
     except Exception as e:
-        kwargs['scores'] = {}
         kwargs['plot'] = ''
         kwargs['error']='Error: '+str(e)
-
-
 
     return render_template('leaderboard.html', **kwargs)
 
